@@ -1,0 +1,40 @@
+---
+import Icon from './Icon.astro';
+import Tag from './Tag.astro';
+
+// Ordered so each row of the 3-column grid is filled: 2+1, 1+2, 1+1+1, 2+1, 1+2, then 1+1+1.
+const items = [
+  { title: 'Originals stay original', text: 'Files are stored byte for byte as uploaded. No compression, resizing, transcoding or watermark, for preview or download.', icon: 'check', status: 'MVP', tag: 'Quality', wide: true },
+  { title: 'SHA-256 on every file', text: 'Recorded while the file uploads and shown to the client, so either side can check a download.', icon: 'code', status: 'MVP', tag: 'Quality' },
+
+  { title: 'Uploads of any size', text: 'Streamed to disk in small chunks. A free-space reserve and a stall timeout protect the machine instead of a fixed size limit.', icon: 'upload', status: 'MVP', tag: 'Quality' },
+  { title: 'Private, revocable links', text: 'Unguessable links that stop working the moment you revoke them. Only a hash is stored for checking, and the link itself can be copied again.', icon: 'link', status: 'MVP', tag: 'Sharing', wide: true },
+
+  { title: 'Password, expiry, download limit', text: 'Add any of them to a link. A page view never counts as a download.', icon: 'lock', status: 'MVP', tag: 'Sharing' },
+  { title: 'View-only links', text: 'No download button. They discourage casual saving and cannot prevent copying, and the page says so.', icon: 'eye', status: 'MVP', tag: 'Sharing' },
+  { title: 'Activity log', text: 'See when a link was opened, previewed or downloaded.', icon: 'list', status: 'MVP', tag: 'Control' },
+
+  { title: 'Previews in the browser', text: 'Images, MP4 and WebM video with seeking, audio, PDF and text, using the browser itself.', icon: 'video', status: 'MVP', tag: 'Client', wide: true },
+  { title: 'One-click desktop app', text: 'One Handoff.exe starts everything on Windows. The owner dashboard stays on your computer.', icon: 'laptop', status: 'MVP', tag: 'Desktop' },
+
+  { title: 'Your data on your disk', text: 'A database for records and plain files for the originals, in one folder.', icon: 'disk', status: 'MVP', tag: 'Desktop' },
+  { title: 'Backup, restore, verify', text: 'Commands for a consistent backup, a restore, and a re-check of every stored file. Link keys are never included in a backup.', icon: 'history', status: 'MVP', tag: 'Desktop', wide: true },
+
+  { title: 'Download all as ZIP', text: 'One archive of everything on a link, streamed without loading it into memory.', icon: 'file', status: 'Planned' },
+  { title: 'Resumable uploads', text: 'For uploading from another computer over a slow connection.', icon: 'upload', status: 'Planned' },
+  { title: 'Email notices', text: 'Optional, using an email server you provide.', icon: 'send', status: 'Planned' },
+] as const;
+---
+<ul class="bento">
+  {items.map((it) => (
+    <li class={`bento-card${'wide' in it && it.wide ? ' wide' : ''}`}>
+      <div class="bento-top">
+        <span class="bento-ico"><Icon name={it.icon} size={18} /></span>
+        <Tag status={it.status} />
+      </div>
+      <h3>{it.title}</h3>
+      <p>{it.text}</p>
+      {'tag' in it && <span class="bento-tag">{it.tag}</span>}
+    </li>
+  ))}
+</ul>

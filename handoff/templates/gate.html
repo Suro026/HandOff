@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Password required{% endblock %}
+{% block body %}
+<h1>Enter the password</h1>
+<p class="muted">The person who shared these files set a password.</p>
+<form method="post" action="/s/{{ token }}/unlock" class="gate">
+  <label for="pw">Password</label>
+  <input id="pw" name="password" type="password" autocomplete="current-password" required autofocus>
+  {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+  <button type="submit" class="btn primary">Open files</button>
+</form>
+{% endblock %}

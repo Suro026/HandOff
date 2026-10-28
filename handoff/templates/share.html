@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% macro viewer(f, token, view_only) %}
+  {% set raw = "/s/" ~ token ~ "/files/" ~ f.id ~ "/raw" %}
+  {% if f.kind == "image" %}<img src="{{ raw }}" alt="{{ f.name }}" loading="lazy"{% if view_only %} class="vo" draggable="false"{% endif %}>
+  {% elif f.kind == "video" %}<video src="{{ raw }}" controls preload="metadata" playsinline{% if view_only %} controlslist="nodownload noplaybackrate" disablepictureinpicture disableremoteplayback class="vo"{% endif %}></video>
+  {% elif f.kind == "audio" %}<audio src="{{ raw }}" controls preload="metadata"{% if view_only %} controlslist="nodownload" class="vo"{% endif %}></audio>
+  {% elif f.kind == "pdf" and view_only %}<div class="pdf vo" data-src="{{ raw }}"><p class="muted">Loading document…</p></div>
+  {% elif f.kind == "pdf" %}<iframe src="{{ raw }}" title="{{ f.name }}" loading="lazy"></iframe>
+  {% else %}<iframe src="{{ raw }}" title="{{ f.name }}" class="text" loading="lazy"></iframe>
+  {% endif %}
+{% endmacro %}
+
+{% block body %}
+<h1>{{ title }}</h1>
+{% if expires_at or remaining is not none %}
+<p class="muted small">
+  {% if expires_at %}Available until {{ expires_at | when }}.{% endif %}
+  {% if remaining is not none and not view_only %} Downloads left on this link: {{ remaining }}.{% endif %}
+</p>
+{% endif %}
+{% if exhausted and not view_only %}<p class="note" role="status">The download limit for this link has been reached.</p>{% endif %}
+{% if not files %}<p>There is nothing on this link yet.</p>{% endif %}
+
+<ul class="files">
+{% for f in files %}
+  {% if view_only %}
+  <li class="doc">
+    <h2 class="fname">{{ f.name }}</h2>
+    {% if f.kind %}{{ viewer(f, token, true) }}
+    {% else %}<p class="muted">This file can't be shown here.</p>{% endif %}
+  </li>
+  {% else %}
+  <li class="file">
+    <div class="meta">
+      <h2>{{ f.name }}</h2>
+      <p class="muted">{{ f.size | filesize }}</p>
+    </div>
+    <div class="actions">
+      {% if not exhausted %}<a class="btn primary" href="/s/{{ token }}/files/{{ f.id }}/download">Download</a>{% endif %}
+    </div>
+    {% if f.kind %}
+    <details class="preview"{% if files | length == 1 %} open{% endif %}>
+      <summary>Preview</summary>
+      {{ viewer(f, token, false) }}
+    </details>
+    {% endif %}
+    <details class="info">
+      <summary>File details</summary>
+      <p class="muted small">{{ f.mime }} · SHA-256 <code>{{ f.sha256 }}</code></p>
+    </details>
+  </li>
+  {% endif %}
+{% endfor %}
+</ul>
+{% if view_only and files | selectattr("kind", "equalto", "pdf") | list %}
+<noscript><p class="muted">Turn on JavaScript to read this document.</p></noscript>
+<script type="module" src="/static/pdfview.js"></script>
+{% endif %}
+{% endblock %}

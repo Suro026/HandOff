@@ -1,0 +1,14 @@
+---
+// Slow ticker of what a client can do with each kind of file. Same facts as the file-types section.
+// The second copy is aria-hidden so screen readers read the list once.
+const items = [
+  ['Video', 'Preview'], ['Images', 'Preview'], ['Audio', 'Preview'], ['PDF', 'Preview'], ['Text', 'Preview'],
+  ['Archives', 'Download'], ['Documents', 'Download'], ['Design files', 'Download'], ['Software projects', 'Download'],
+] as const;
+---
+<div class="ticker" role="region" aria-label="File types and what a client can do with each">
+  <ul class="ticker-track">
+    {items.map(([n, s]) => (<li><b>{n}</b> <span class={`tag tag-${s.toLowerCase()}`}>{s}</span></li>))}
+    {items.map(([n, s]) => (<li aria-hidden="true"><b>{n}</b> <span class={`tag tag-${s.toLowerCase()}`}>{s}</span></li>))}
+  </ul>
+</div>

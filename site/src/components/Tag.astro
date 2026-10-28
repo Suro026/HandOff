@@ -1,0 +1,6 @@
+---
+// Status or kind tag. The text carries the meaning; the border style is secondary.
+interface Props { status: 'MVP' | 'Planned' | 'Later' | 'Preview' | 'Download' }
+const { status } = Astro.props;
+---
+<span class={`tag tag-${status.toLowerCase()}`}>{status}</span>

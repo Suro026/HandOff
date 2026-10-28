@@ -1,0 +1,33 @@
+# Builds the desktop app for Windows, Linux and macOS (Intel and Apple Silicon). Only the Windows x64 build
+# has been run by hand so far; the others are prepared and UNTESTED until this workflow has run once.
+# Linux is built on the oldest supported runner (Ubuntu 22.04) because a program built on older glibc runs on newer
+# systems, not the other way round. Builds are NOT signed or notarized (docs/unsigned-builds.md).
+name: Build desktop apps
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, ubuntu-22.04, ubuntu-22.04-arm, macos-13, macos-14]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-dev.txt -r requirements-desktop.txt
+      - run: pytest
+      - run: python packaging/build.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: handoff-${{ matrix.os }}
+          path: build-out/release/*

@@ -1,0 +1,24 @@
+---
+import Icon from './Icon.astro';
+---
+<!-- Static illustration of the planned client page. Not interactive. -->
+<div class="mock" role="img" aria-label="Illustration of the client page: the project title, one video file with its size and SHA-256, a preview area, and a Download original button.">
+  <div class="mock-bar" aria-hidden="true"><i></i><i></i><i></i><span>your-address/s/Xk9f…</span></div>
+  <div class="mock-body" aria-hidden="true">
+    <p class="mock-h">Brand film</p>
+    <p class="muted small">Original files, exactly as the sender uploaded them.</p>
+    <div class="mock-file">
+      <div class="mock-meta">
+        <strong>brand-film-master.mp4</strong>
+        <span class="muted small">3.8 GB · video/mp4</span>
+        <span class="muted small hashline">SHA-256 9f2c1a…e7b0</span>
+      </div>
+      <span class="ph-btn ph-btn-primary"><Icon name="download" size={14} /> Download original</span>
+    </div>
+    <div class="ph-video">
+      <div class="ph-logo"><span></span></div>
+      <div class="ph-scrub"><i style="width:42%"></i><b style="left:42%"></b></div>
+    </div>
+    <p class="muted small">Plays in the browser, with seeking. Files a browser can't play download directly.</p>
+  </div>
+</div>

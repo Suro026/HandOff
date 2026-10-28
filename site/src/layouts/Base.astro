@@ -1,0 +1,134 @@
+---
+import '@fontsource-variable/manrope/wght.css';
+import '../styles/global.css';
+import Icon from '../components/Icon.astro';
+import Mark from '../components/Mark.astro';
+import { NAME, TAGLINE, DESCRIPTION, REPO_URL, DOCS_URL, LICENSE_NAME, COPYRIGHT_HOLDER } from '../../site.config';
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const canonical = Astro.site ? new URL(base, Astro.site).href : '';
+const ogImage = Astro.site ? new URL(`${base}og.png`, Astro.site).href : `${base}og.png`;
+const title = `${NAME}: open-source delivery of finished work for freelancers`;
+const links = [
+  { href: '#how', label: 'How it works' },
+  { href: '#features', label: 'Features' },
+  { href: '#self-hosting', label: 'Self-hosting' },
+  { href: '#faq', label: 'FAQ' },
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={DESCRIPTION} />
+    <meta name="color-scheme" content="light dark" />    {canonical && <link rel="canonical" href={canonical} />}
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={`${NAME}: ${TAGLINE}`} />
+    <meta property="og:description" content={DESCRIPTION} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${NAME}: ${TAGLINE}`} />
+    <meta name="twitter:image" content={ogImage} />
+    <script is:inline>
+      try { var t = localStorage.getItem('theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="wrap bar">
+        <a class="brand" href={base} aria-label={`${NAME}, home`}>
+          <Mark size={28} /><span>{NAME}</span>
+        </a>
+        <nav class="nav" aria-label="Main">
+          {links.map((l) => <a href={l.href}>{l.label}</a>)}
+          {REPO_URL && <a class="btn" href={REPO_URL}><Icon name="github" size={18} /> GitHub</a>}
+        </nav>
+        <div class="bar-tools">
+          <button type="button" class="icon-btn theme-toggle" id="theme-toggle" aria-label="Switch colour theme">
+            <span class="i-moon"><Icon name="moon" /></span><span class="i-sun"><Icon name="sun" /></span>
+          </button>
+          <details class="menu" id="menu">
+            <summary class="icon-btn" aria-label="Menu">
+              <span class="i-menu"><Icon name="menu" /></span><span class="i-x"><Icon name="x" /></span>
+            </summary>
+            <div class="menu-panel">
+              <nav aria-label="Mobile">
+                {links.map((l) => <a href={l.href}>{l.label}</a>)}
+                {REPO_URL && <a class="btn btn-primary" href={REPO_URL}><Icon name="github" size={18} /> GitHub</a>}
+              </nav>
+            </div>
+          </details>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap foot">
+        <div>
+          <p><strong>{NAME}</strong> is open source and in early development. It runs on your own computer or server; this site has no tracking and sets no cookies.</p>
+          <p style="margin-top:12px">License: {LICENSE_NAME || 'to be decided'}. © {new Date().getFullYear()} {COPYRIGHT_HOLDER}.</p>
+        </div>
+        <ul aria-label="Project links">
+          {REPO_URL && <li><a href={REPO_URL}>Repository</a></li>}
+          {DOCS_URL && <li><a href={DOCS_URL}>Docs</a></li>}
+          {REPO_URL && <li><a href={`${REPO_URL}/issues`}>Issues</a></li>}
+          {REPO_URL && <li><a href={`${REPO_URL}/discussions`}>Discussions</a></li>}
+          {!REPO_URL && !DOCS_URL && <li>Repository and docs links will appear here once they are published.</li>}
+        </ul>
+      </div>
+    </footer>
+
+    <script is:inline>
+      (function () {
+        // Scroll reveal: progressive enhancement. Content is visible without JS or with reduced motion.
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+          var els = [].slice.call(document.querySelectorAll('main section:not(.hero) > .wrap'));
+          var io = new IntersectionObserver(function (es) {
+            es.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add('in'); io.unobserve(x.target); } });
+          }, { rootMargin: '0px 0px -8% 0px' });
+          els.forEach(function (e) { e.classList.add('reveal'); io.observe(e); });
+        }
+        var root = document.documentElement;
+        var toggle = document.getElementById('theme-toggle');
+        function isDark() {
+          var t = root.dataset.theme;
+          return t === 'dark';
+        }
+        if (toggle) toggle.addEventListener('click', function () {
+          var next = isDark() ? 'light' : 'dark';
+          root.dataset.theme = next;
+          try { localStorage.setItem('theme', next); } catch (e) {}
+        });
+        var menu = document.getElementById('menu');
+        if (menu) menu.addEventListener('click', function (e) {
+          if (e.target.closest && e.target.closest('a')) menu.removeAttribute('open');
+        });
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && menu && menu.hasAttribute('open')) { menu.removeAttribute('open'); menu.querySelector('summary').focus(); }
+        });
+        var btn = document.getElementById('copy-install');
+        if (btn && navigator.clipboard) {
+          btn.hidden = false;
+          btn.addEventListener('click', function () {
+            var text = document.getElementById('install-code').innerText;
+            navigator.clipboard.writeText(text).then(function () {
+              var l = btn.querySelector('.lbl'); var old = l.textContent; l.textContent = 'Copied';
+              setTimeout(function () { l.textContent = old; }, 1800);
+            }, function () {});
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>

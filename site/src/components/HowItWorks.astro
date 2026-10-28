@@ -1,0 +1,26 @@
+---
+import Icon from './Icon.astro';
+
+const { name } = Astro.props as { name: string };
+const steps = [
+  { icon: 'wallet', title: 'Agree terms and payment', body: 'Between you and your client, any way you like. Handoff never takes, checks or enforces payment.', outside: true },
+  { icon: 'upload', title: 'Add the finished work', body: 'Any file type. Each file is copied as it is, with its SHA-256 recorded, so nothing is changed on the way.' },
+  { icon: 'link', title: 'Create a private link', body: 'Choose view and download, or view only. Add a password, an expiry or a download limit if you want. Send it on WhatsApp, email or anywhere.' },
+  { icon: 'download', title: 'Your client previews and downloads', body: 'Supported files play in the browser. Everything else downloads directly. You can revoke the link at any time.', final: true },
+];
+---
+<ol class="rail">
+  {steps.map((s, i) => (
+    <li>
+      <span class="node" aria-hidden="true">{i + 1}</span>
+      <div class={`stepcard${s.outside ? ' out' : ''}${s.final ? ' go' : ''}`}>
+        <span class="ico"><Icon name={s.icon} size={18} /></span>
+        <div>
+          {s.outside && <p class="node-note">Outside {name}</p>}
+          <h3>{s.title}</h3>
+          <p>{s.body}</p>
+        </div>
+      </div>
+    </li>
+  ))}
+</ol>

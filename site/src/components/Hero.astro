@@ -1,0 +1,33 @@
+---
+import Icon from './Icon.astro';
+import { DeliveryDemo } from './DeliveryDemo';
+
+interface Props { name: string; repoUrl?: string; docsUrl?: string }
+const { name, repoUrl, docsUrl } = Astro.props;
+---
+<section class="hero" aria-labelledby="h1">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="badge rise"><Icon name="alert" size={16} /> Early development. Windows first.</p>
+      <h1 id="h1" class="h1-lines">
+        <span class="line"><span class="line-in" style="--i:0">Deliver finished work.</span></span>{' '}
+        <span class="line"><span class="line-in" style="--i:1">Exactly as you made it.</span></span>{' '}
+        <span class="line"><span class="line-in" style="--i:2"><span class="mk">No watermark. No recompression.</span></span></span>
+      </h1>
+      <p class="lead rise" style="--d:160ms">
+        {name} is a free, open-source desktop app for sharing completed projects. Add the files, send a private
+        link, and your client previews and downloads the originals from your own computer.
+      </p>
+      <div class="cta-row rise" style="--d:240ms">
+        {repoUrl && <a class="btn btn-primary" href={repoUrl}><Icon name="github" size={18} /> Star on GitHub</a>}
+        {docsUrl && <a class="btn" href={docsUrl}>Read the docs</a>}
+        <a class={repoUrl ? 'btn' : 'btn btn-primary'} href="#how">See how it works <Icon name="send" size={16} /></a>
+      </div>
+      {!repoUrl && <p class="hero-note">The repository link will appear here once it is public.</p>}
+    </div>
+    <div class="poster">
+      <DeliveryDemo client:load />
+      <p class="fig-cap">Try it: create a link, then switch to view-only and see what that does and doesn't do.</p>
+    </div>
+  </div>
+</section>

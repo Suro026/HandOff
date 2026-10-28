@@ -1,0 +1,10 @@
+---
+// The Handoff mark: two bars and a file, an H drawn as the moment work changes hands.
+interface Props { size?: number }
+const { size = 30 } = Astro.props;
+---
+<svg class="mark" viewBox="0 0 64 64" width={size} height={size} aria-hidden="true" focusable="false">
+  <rect class="a" x="6" y="6" width="14" height="52" rx="5" />
+  <rect class="a" x="24" y="24" width="16" height="16" rx="2.5" />
+  <rect class="b" x="44" y="6" width="14" height="52" rx="5" />
+</svg>

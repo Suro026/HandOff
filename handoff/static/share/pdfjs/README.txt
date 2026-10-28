@@ -1,0 +1,1 @@
+PDF.js 6.4.299 (https://mozilla.github.io/pdf.js/), Apache-2.0, see LICENSE. Used only to draw PDFs on view-only links without the browser's own download and print buttons. Unmodified files from the pdfjs-dist npm package (build/pdf.min.mjs and build/pdf.worker.min.mjs).

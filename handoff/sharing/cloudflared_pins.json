@@ -1,0 +1,12 @@
+{
+  "_note": "Pinned release of Cloudflare's cloudflared (Apache-2.0). Hashes are the SHA-256 digests GitHub reports for each release asset. Handoff refuses a download that does not match. Update both fields together and re-test.",
+  "version": "2026.10.4",
+  "base_url": "https://github.com/cloudflare/cloudflared/releases/download/2026.10.4/",
+  "assets": {
+    "windows-amd64": {"name": "cloudflared-windows-amd64.exe", "sha256": "411b16d40c8d872243efeb52c550053d00af0a8a97fbb32e730fb8aba429eaa8", "kind": "exe"},
+    "linux-amd64":   {"name": "cloudflared-linux-amd64",       "sha256": "ae5e8add7884b0531d66bbca4570d1de491ff6da51e4ebe7eb160cdf241d9e42", "kind": "bin"},
+    "linux-arm64":   {"name": "cloudflared-linux-arm64",       "sha256": "2b7203b4fb0ba28a0c1e12f8855ce2c25f76d266a8d5edafac5540b6812acff6", "kind": "bin"},
+    "darwin-amd64":  {"name": "cloudflared-darwin-amd64.tgz",  "sha256": "f11fbef4207d715892331917dafd437f032cf4b7137ed64dea3008338c1c613d", "kind": "tgz"},
+    "darwin-arm64":  {"name": "cloudflared-darwin-arm64.tgz",  "sha256": "68b6bc4080ac1330234db2a9002d07f98b000537a1bd531a687b660d4160fa7f", "kind": "tgz"}
+  }
+}

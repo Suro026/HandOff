@@ -1,0 +1,239 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import Tag from '../components/Tag.astro';
+import ClientPageMock from '../components/ClientPageMock.astro';
+import Hero from '../components/Hero.astro';
+import HowItWorks from '../components/HowItWorks.astro';
+import FeatureBento from '../components/FeatureBento.astro';
+import Ticker from '../components/Ticker.astro';
+import { NAME, REPO_URL, DOCS_URL, UPDATES_FORM_URL, UPDATES_FORM_SERVICE } from '../../site.config';
+
+const problems = [
+  { h: 'Chat apps and email get in the way', p: 'Many chat and email services cap file size or recompress what you send, so your client may not receive the file you actually made.' },
+  { h: 'A preview is not the real thing', p: 'Watermarked or low-quality previews make good work look worse, and the client still has to wait for the real files.' },
+  { h: 'You send a link and hope', p: "There's usually no record of whether the client opened it, or whether it still works next week." },
+];
+
+const kinds = [
+  { icon: 'video', h: 'Video', s: 'Preview', p: 'MP4 or WebM that the browser can play, with seeking. ProRes and many MKV files download instead.' },
+  { icon: 'image', h: 'Images', s: 'Preview', p: 'PNG, JPEG, GIF, WebP and AVIF. HEIC, RAW and PSD download.' },
+  { icon: 'audio', h: 'Audio', s: 'Preview', p: 'MP3, AAC/M4A, Ogg, WAV and FLAC where the browser supports them.' },
+  { icon: 'file', h: 'PDF', s: 'Preview', p: "Drawn page by page on view-only links, so the browser's save and print buttons aren't offered. Shown in the browser's own viewer otherwise." },
+  { icon: 'edit', h: 'Plain text', s: 'Preview', p: 'Shown as text, up to 2 MB.' },
+  { icon: 'file', h: 'Documents, archives, design files', s: 'Download', p: 'Word, ZIP, PSD, AI and similar files download exactly as uploaded.' },
+  { icon: 'code', h: 'Software projects', s: 'Download', p: 'Shared as an archive. Nothing you upload is ever run.' },
+  { icon: 'globe', h: 'Website demos', s: 'Planned', p: 'Static demos in an isolated frame, in a later release.' },
+] as const;
+
+const options = [
+  { icon: 'laptop', h: 'On your computer', good: 'The simplest way to try it, and on the same Wi-Fi it works for others too.', bad: "Clients elsewhere can't open the links, and nothing works while your computer is off." },
+  { icon: 'globe', h: 'A tunnel service', good: 'No router setup, and it works from behind a home network.', bad: 'A third party carries your traffic and can in principle see it. Check its current terms, address stability and file-size limits.' },
+  { icon: 'server', h: 'Your own server', good: 'Always on, and fully yours.', bad: 'Costs money and needs some server skills.' },
+] as const;
+
+const road = [
+  { h: 'MVP (v0.1)', s: 'MVP', items: ['Streamed uploads with disk-space safeguards', 'Originals stored untouched, with SHA-256', 'Private links: revoke, password, expiry, download limit', 'View-only links', 'Browser previews and direct downloads', 'Activity log', 'Windows desktop app with Quick Share and same-Wi-Fi sharing', 'Backup, restore and verify'] },
+  { h: 'v0.2', s: 'Planned', items: ['macOS and Linux builds, tested','Download all as ZIP', 'Resumable uploads', 'Static website demos on an isolated origin', 'Email notices', 'Listing the contents of archives', 'More languages'] },
+  { h: 'Later', s: 'Later', items: ['Opt-in sandboxed demos', 'S3-compatible storage', 'More than one owner account'] },
+] as const;
+
+const faq = [
+  { q: 'Is it free?', a: "The plan is yes: open source, no subscription and no platform fees. You may pay for whatever you use to host it, such as a server. The license has not been chosen yet." },
+  { q: 'Is the file my client downloads changed?', a: "No. Files are stored exactly as received and served exactly as stored. There is no compression, resizing, transcoding or metadata stripping. Each file's size and SHA-256 are recorded and shown, so either side can check a download." },
+  { q: 'Is there a watermark?', a: "No. Handoff never adds one, to previews or to downloads." },
+  { q: 'How big can files be?', a: "There is no fixed limit. The server refuses an upload that would leave too little free disk space (a reserve you can set), cancels stalled uploads and removes partial files. If you upload through a tunnel or proxy, that service may have its own size limit." },
+  { q: 'Will my client be able to play my video?', a: "If their browser supports the format, yes, with seeking. Professional codecs and some containers won't play in a browser, so those download directly. Handoff doesn't promise universal playback." },
+  { q: 'Do clients need an account?', a: "No. They open the link, and enter a password if you set one." },
+  { q: 'Does it handle payments?', a: "No. Handoff never takes, holds, checks or enforces payment. Agree that with your client, then send the link when you're ready." },
+  { q: 'Is a view-only link safe?', a: "It hides the download button and refuses the download address, which discourages casual saving. It can't prevent copying: the browser still receives the file to show it, and screens can be recorded. Use it for convenience, not to guard something that must not be copied." },
+  { q: 'Can I use it without a domain?', a: "You can try it on your own computer, or on the same Wi-Fi, without one. For clients elsewhere, the share port must be reachable from the internet, for example through a tunnel service or your own server. Some tunnel services give you a web address without a domain. Check each service's current terms yourself." },
+  { q: 'What happens if my computer is off?', a: "Your links will not open until it is back on, and a laptop on a slow connection serves slowly. A small always-on server avoids this." },
+  { q: 'Where are my files stored?', a: "On the disk of the computer or server you run it on, in one folder you choose, with plain files for the originals. There is no central server run by the project." },
+  { q: 'Is it secure?', a: "It is designed with reasonable safeguards: unguessable links stored only as hashes, an owner dashboard that listens on localhost only, and no running of uploaded code. That is not a promise of perfect safety, and a self-hosted setup depends on how you run it. See SECURITY.md in the repository." },
+  { q: 'Can I contribute?', a: "Yes. Code, tests, translations, docs and bug reports are all welcome once the repository is public." },
+];
+---
+<Base>
+  <Hero name={NAME} repoUrl={REPO_URL || undefined} docsUrl={DOCS_URL || undefined} />
+  <Ticker />
+
+  <section class="band band-paper" aria-labelledby="problem">
+    <div class="wrap split">
+      <div class="side">
+        <h2 id="problem">Handing over finished work shouldn't cost you quality</h2>
+      </div>
+      <ul class="rows">
+        {problems.map((p) => (<li><h3>{p.h}</h3><p>{p.p}</p></li>))}
+      </ul>
+    </div>
+  </section>
+
+  <section id="how" class="band" aria-labelledby="how-h">
+    <div class="wrap split">
+      <div class="side">
+        <h2 id="how-h">From finished work to your client's download</h2>
+        <p class="lead">Four steps. Payment is yours to arrange, and Handoff stays out of it.</p>
+      </div>
+      <div>
+        <HowItWorks name={NAME} />
+        <p class="rule-line"><Icon name="check" size={24} /> Your files are never altered. No compression, resizing or watermark.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band band-paper" aria-labelledby="client-h">
+    <div class="wrap clientview">
+      <div class="phone-wrap">
+        <ClientPageMock />
+        <p class="fig-cap">Illustration of the client page.</p>
+      </div>
+      <div>
+        <h2 id="client-h">What your client sees</h2>
+        <p class="lead" style="margin-top:16px">One page. No sign-up, no app to install.</p>
+        <ul>
+          <li><Icon name="eye" /><span>The actual work, previewed in their own browser where it can be.</span></li>
+          <li><Icon name="download" /><span>A direct download of the original file, with its size and SHA-256 so they can check it.</span></li>
+          <li><Icon name="link" /><span>If you revoke the link or it expires, a plain page says it is no longer active.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" class="band" aria-labelledby="feat-h">
+    <div class="wrap">
+      <h2 id="feat-h">What you get, and when</h2>
+      <p class="lead" style="margin-top:16px">Each card shows where it stands. Only the Windows app has been built and tested so far.</p>
+      <div class="bento-wrap"><FeatureBento /></div>
+    </div>
+  </section>
+
+  <section id="work" class="band band-paper" aria-labelledby="work-h">
+    <div class="wrap split">
+      <div class="side">
+        <h2 id="work-h">Any kind of finished work</h2>
+        <p class="lead">Previews use your client's browser, so some formats won't play. Those download directly, and the file is never converted. Handoff never runs uploaded code, and HTML or SVG files show as plain text.</p>
+      </div>
+      <ul class="types">
+        {kinds.map((k) => (
+          <li>
+            <span class="ico"><Icon name={k.icon} /></span>
+            <div><h3>{k.h}</h3><p>{k.p}</p></div>
+            <Tag status={k.s} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="control-h">
+    <div class="wrap split">
+      <div class="side">
+        <h2 id="control-h">You decide who can open it, and for how long</h2>
+        <p class="lead">Every link can be revoked, given an expiry, protected with a password or capped by download count. Opening the page never uses up a download.</p>
+      </div>
+      <div>
+        <table class="compare">
+          <caption class="small muted" style="text-align:left;padding-bottom:8px">The two kinds of link</caption>
+          <thead><tr><th scope="col"></th><th scope="col">View and download</th><th scope="col">View only</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Preview in the browser</th><td>Yes</td><td>Yes, for types a browser can show</td></tr>
+            <tr><th scope="row">Download button</th><td>Yes, the original file</td><td>No</td></tr>
+            <tr><th scope="row">Files with no browser preview</th><td>Download directly</td><td>Not available on this link</td></tr>
+            <tr><th scope="row">Can the client keep a copy?</th><td>Yes, by design</td><td>Yes. The browser still receives the file, so saving it or recording the screen can't be stopped</td></tr>
+            <tr><th scope="row">Revoke, expiry, password</th><td>Yes</td><td>Yes</td></tr>
+            <tr><th scope="row">Download limit</th><td>Yes</td><td>Not applicable</td></tr>
+          </tbody>
+        </table>
+        <p class="callout"><Icon name="alert" /><span><strong>View-only is a courtesy, not protection.</strong> It discourages casual saving. Don't use it for anything that must not be copied.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="self-hosting" class="band band-ink" aria-labelledby="host-h">
+    <div class="wrap">
+      <h2 id="host-h">Run it yourself, and be clear about who can reach it</h2>
+      <div class="opts" style="margin-top:40px">
+        {options.map((o) => (
+          <div class="opt">
+            <h3><Icon name={o.icon} /> {o.h}</h3>
+            <p class="good">{o.good}</p>
+            <p class="catch">{o.bad}</p>
+          </div>
+        ))}
+      </div>
+      <div class="callout"><Icon name="alert" /><p><strong>A local install is not reachable from the internet by itself, and links work only while your computer is on.</strong> Handoff uses two ports: the owner dashboard stays on your computer, and only the client share port is meant to be reachable.{DOCS_URL ? '' : ' A guide is planned for the docs.'}{DOCS_URL && <> See the <a href={DOCS_URL}>docs</a>.</>}</p></div>
+      <div class="code">
+        <div class="code-head">
+          <span>Windows: unzip the release to a short folder such as C:\Handoff and double-click Handoff.exe. From source:</span>
+          <button type="button" class="btn btn-sm copy-btn" id="copy-install" hidden><Icon name="copy" size={16} /> <span class="lbl">Copy</span></button>
+        </div>
+        <pre id="install-code"><code>git clone https://github.com/Suro026/HandOff.git
+pip install -r requirements-desktop.txt
+python -m handoff desktop</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="cant-h">
+    <div class="wrap split">
+      <div class="side">
+        <h2 id="cant-h">What {NAME} can't do</h2>
+        <p class="lead">It makes delivery cleaner. It can't make a dishonest client honest, or your laptop a data centre.</p>
+      </div>
+      <ul class="cant">
+        <li><Icon name="x" /><span>It can't take, check or enforce payment. That is between you and your client.</span></li>
+        <li><Icon name="x" /><span>It can't stop a client from keeping, copying or sharing files they can see or download. View-only doesn't change that.</span></li>
+        <li><Icon name="x" /><span>It can't take back a file once it has been downloaded.</span></li>
+        <li><Icon name="x" /><span>It doesn't scan uploads for malware, and it doesn't encrypt end to end. A tunnel provider can in principle see traffic.</span></li>
+        <li><Icon name="x" /><span>It can't keep links working while your computer is off or offline.</span></li>
+        <li><Icon name="x" /><span>It is not a marketplace, a payment processor or a general cloud drive.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="band band-paper" aria-labelledby="road-h">
+    <div class="wrap">
+      <h2 id="road-h">Where it is heading</h2>
+      <p class="lead" style="margin-top:16px">Plans can change. A smaller scope that works beats a wide one that doesn't.</p>
+      <div class="road" style="margin-top:40px">
+        {road.map((r) => (
+          <div>
+            <h3>{r.h} <Tag status={r.s} /></h3>
+            <ul>{r.items.map((i) => <li>{i}</li>)}</ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="band" aria-labelledby="faq-h">
+    <div class="wrap split">
+      <div class="side"><h2 id="faq-h">Questions</h2></div>
+      <div class="faq">
+        {faq.map((f) => (
+          <details class="q"><summary>{f.q} <Icon name="chevron" size={18} /></summary><p class="a">{f.a}</p></details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="band band-paper" aria-labelledby="join-h">
+    <div class="wrap">
+      <h2 id="join-h">Follow along or help build it</h2>
+      <p class="lead" style="margin-top:16px">
+        {REPO_URL ? 'Star the repository to show interest, or watch it to hear about releases.' : 'The repository is not public yet. This section will link to it when it is.'}
+      </p>
+      <div class="involve">
+        <div><h3>Star and watch</h3><p>{REPO_URL ? <>Watch the repo on GitHub for releases. <a href={REPO_URL}>Open the repository</a>.</> : 'Watch the repo on GitHub for releases, once it is public.'}</p></div>
+        <div><h3>Ask and report</h3><p>{REPO_URL ? <>Questions and bug reports go in <a href={`${REPO_URL}/issues`}>issues</a> and <a href={`${REPO_URL}/discussions`}>discussions</a>.</> : 'Issues and discussions will open with the repository.'}</p></div>
+        <div><h3>Contribute</h3><p>Code, tests, translations, docs and testing with real freelancers are all useful. The contributing guide is in the repository.</p></div>
+      </div>
+      <p class="muted" style="margin-top:24px">
+        {UPDATES_FORM_URL
+          ? <>Prefer email? <a href={UPDATES_FORM_URL}>Join the updates list</a>{UPDATES_FORM_SERVICE ? ` (your email goes to ${UPDATES_FORM_SERVICE})` : ''}.</>
+          : 'Watch the repo on GitHub for releases.'}
+      </p>
+    </div>
+  </section>
+</Base>
