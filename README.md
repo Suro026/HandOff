@@ -1,4 +1,11 @@
-# Handoff
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.svg">
+    <img src="assets/logo-light.svg" alt="Handoff logo" width="96" height="96">
+  </picture>
+</p>
+
+<h1 align="center">Handoff</h1>
 
 Give your client your finished work, straight from your own computer.
 
