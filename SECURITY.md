@@ -19,7 +19,7 @@ Please report vulnerabilities privately to the maintainer rather than in a publi
 
 ## What it does not do
 
-- It is **not code-signed or notarized**. See `docs/unsigned-builds.md`; "unsigned" means nobody has verified the app, and the project makes no such claim.
+- It is **not code-signed or notarized**. See "Unsigned downloads" in the README; "unsigned" means nobody has verified the app, and the project makes no such claim.
 - It cannot stop a client from keeping, sharing or re-uploading what they download. **View-only links are not protection**; the browser receives the file.
 - It does not scan uploads for malware.
 - It does not verify who opens a link. Anyone who has the link (and the password, if set) can open it.

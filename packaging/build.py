@@ -3,8 +3,8 @@
     pip install -r requirements-desktop.txt
     python packaging/build.py
 
-Output goes to build-out/release: an archive plus SHA256SUMS. The builds are NOT signed or notarized; see
-docs/unsigned-builds.md. Build each operating system on that operating system.
+Output goes to build-out/release: an archive plus its .sha256 file. The builds are NOT signed or notarized (see the
+README). Build each operating system on that operating system.
 """
 import hashlib
 import platform
@@ -49,7 +49,7 @@ def main() -> None:
         with tarfile.open(archive, "w:gz") as t:
             t.add(folder, arcname="Handoff")
     digest = hashlib.sha256(archive.read_bytes()).hexdigest()
-    (release / "SHA256SUMS").write_text(f"{digest}  {archive.name}\n")
+    (release / f"{archive.name}.sha256").write_text(f"{digest}  {archive.name}\n")
     print(f"Built {archive} ({archive.stat().st_size / 1e6:.1f} MB)\nSHA-256 {digest}")
 
 

@@ -1,7 +1,8 @@
 # Builds the desktop app for Windows, Linux and macOS (Intel and Apple Silicon). Only the Windows x64 build
 # has been run by hand so far; the others are prepared and UNTESTED until this workflow has run once.
 # Linux is built on the oldest supported runner (Ubuntu 22.04) because a program built on older glibc runs on newer
-# systems, not the other way round. Builds are NOT signed or notarized (docs/unsigned-builds.md).
+# systems, not the other way round. Builds are NOT signed or notarized (see the README).
+# Pushing a tag such as v0.1.0 also attaches each build to a GitHub Release.
 name: Build desktop apps
 
 on:
@@ -10,7 +11,7 @@ on:
     tags: ["v*"]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -31,3 +32,8 @@ jobs:
         with:
           name: handoff-${{ matrix.os }}
           path: build-out/release/*
+      - name: Attach to the release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build-out/release/Handoff-*

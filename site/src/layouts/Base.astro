@@ -3,7 +3,7 @@ import '@fontsource-variable/manrope/wght.css';
 import '../styles/global.css';
 import Icon from '../components/Icon.astro';
 import Mark from '../components/Mark.astro';
-import { NAME, TAGLINE, DESCRIPTION, REPO_URL, DOCS_URL, LICENSE_NAME, COPYRIGHT_HOLDER } from '../../site.config';
+import { NAME, TAGLINE, DESCRIPTION, REPO_URL, DOCS_URL, LICENSE_NAME, COPYRIGHT_HOLDER, SUPPORT_URL } from '../../site.config';
 
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const canonical = Astro.site ? new URL(base, Astro.site).href : '';
@@ -83,7 +83,7 @@ const links = [
           {REPO_URL && <li><a href={REPO_URL}>Repository</a></li>}
           {DOCS_URL && <li><a href={DOCS_URL}>Docs</a></li>}
           {REPO_URL && <li><a href={`${REPO_URL}/issues`}>Issues</a></li>}
-          {REPO_URL && <li><a href={`${REPO_URL}/discussions`}>Discussions</a></li>}
+          {SUPPORT_URL && <li><a href={SUPPORT_URL}>Buy me a coffee</a></li>}
           {!REPO_URL && !DOCS_URL && <li>Repository and docs links will appear here once they are published.</li>}
         </ul>
       </div>

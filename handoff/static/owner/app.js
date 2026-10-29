@@ -268,7 +268,7 @@
     clear(panel);
     var err = h('div');
     if (!sharing.managed) {
-      panel.appendChild(h('div', { class: 'card' }, h('p', null, 'This copy of Handoff is running in server mode. Set PUBLIC_BASE_URL to the address clients should use. See docs/remote-access.md.')));
+      panel.appendChild(h('div', { class: 'card' }, h('p', null, 'This copy of Handoff is running in server mode. Set PUBLIC_BASE_URL to the address clients should use. See the README.')));
       return;
     }
     panel.appendChild(err);
