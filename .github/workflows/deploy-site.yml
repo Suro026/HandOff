@@ -1,11 +1,10 @@
-# Note: GitHub only runs workflows from the repository root's .github/workflows.
-# If /site lives inside a larger repo, copy this file there (paths below assume that layout).
+# Publishes the landing page in site/ to GitHub Pages. Needs Settings > Pages > Source: GitHub Actions.
 name: Deploy site to GitHub Pages
 
 on:
   push:
     branches: [main]
-    paths: ['site/**']
+    paths: ['site/**', '.github/workflows/deploy-site.yml']
   workflow_dispatch:
 
 permissions:
